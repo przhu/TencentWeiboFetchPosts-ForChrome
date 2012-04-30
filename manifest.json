@@ -1,0 +1,14 @@
+{
+  "name": "TencentWeiboFetchPosts",
+  "version": "0.1",
+  "manifest_version": 1,
+  "description": "FXK GGL",
+  "content_scripts": [
+    {
+      "matches": ["http://search.t.qq.com/index.php*","http://search.t.qq.com/message.php*"],
+      "css": ["jquery-ui.css"],
+      "js": ["jquery-1.7.2.min.js","jquery-ui.min.js","script.js"],
+      "run at":"document_start"
+    }
+  ]
+}
