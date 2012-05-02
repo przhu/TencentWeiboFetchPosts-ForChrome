@@ -2,7 +2,7 @@
   "name": "TencentWeiboFetchPosts",
   "version": "0.1",
   "manifest_version": 1,
-  "description": "FXK GGL",
+  "description": "add a 'fetch pages of found posts' dialog to TencentWeibo's search result page",
   "content_scripts": [
     {
       "matches": ["http://search.t.qq.com/index.php*","http://search.t.qq.com/message.php*"],
