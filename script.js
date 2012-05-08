@@ -3,6 +3,7 @@
 // @namespace    tag:przhu@gmx.com,2012-04-30:TencentWeiboFetchPosts
 // @include      http://search.t.qq.com/index.php*
 // @include      http://search.t.qq.com/message.php*
+// @include      http://*t.qq.com/k/*
 // @require      http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js
 // @require      http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.19/jquery-ui.min.js
 // @resource     jq_ui_css http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.19/themes/ui-lightness/jquery-ui.css 
@@ -39,6 +40,18 @@ $('body').append("<div id='fetch_posts_dialog' title='Fetch Posts'>"+
 "</div>"
 );
 
+function bind_progress_bar(fpd) {
+    fpd.append('<div id="fetch_progress_bar"></div>');
+    $('#fetch_progress_bar').progressbar({
+	value: 0
+    });
+    $('body').bind('fetch_progress', function(e, redir_count, redir_limit) {
+	$('#fetch_progress_bar').progressbar({
+	    value: redir_count / redir_limit * 100
+	});
+    });
+}
+
 var startDownload = function(){};
 var redir_limit;
 
@@ -60,10 +73,8 @@ $(window).load (
 			    'option', 'buttons', {}
 			);
 			$('#fetch_page_count').attr('disabled', 'disabled');
-			fpd.append('<div id="fetch_progress_bar"></div>');
-			$('#fetch_progress_bar').progressbar({
-			    value: 0
-			});
+			if (0 < redir_limit) 
+			    bind_progress_bar(fpd);
 			startDownload();
 		    }
 		}, 
@@ -121,10 +132,9 @@ startDownload = function () {
     }
     getPosts(cur_doc, results);
     redir_count = redir_count + 1;
-    $('#fetch_progress_bar').progressbar({
-	value: redir_count / redir_limit * 100
-    });
-    nextpage = $('.blueFoot a.pageBtn:last', cur_doc).attr('href');
+    $('body').trigger('fetch_progress', [redir_count, redir_limit]);
+    nextpage = $('.blueFoot a:last-child', cur_doc).
+	filter('.pageBtn').attr('href');
     if (redir_count >= redir_limit || typeof (nextpage) === 'undefined') {
 	var fpd = $('#fetch_posts_dialog');
 	var fpdl_link = 'data:text/plain;charset=utf-8,'+
